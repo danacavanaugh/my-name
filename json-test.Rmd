@@ -1,0 +1,122 @@
+---
+title: "json-test"
+output: html_document
+---
+
+library(jsonlite)
+
+data <- fromJSON("json-data.json")
+
+
+for(d in data$mydata){
+  if(d > 10){
+    print(d)
+  }else
+  {
+  print(paste(d, "is <10"))
+}
+}
+
+
+
+
+patients <- data.frame(
+  PatientID = c(101, 102, 103, 104, 105, 105, 106, 107),
+  Name = c("Alice", "Bob", "Charlie", "Diana", "Ethan", "Ethan", "Fiona", "George"),
+  Age = c(72, 65, 80, 55, 70, 70, 60, 68),
+  Gender = factor(c("Female", "Male", "Male", "Female", "Male", "Male", "Female", "Male")),
+  Diagnosis = factor(c("IBD", "No_IBD", "IBD", "No_IBD", "IBD", "IBD", "No_IBD", "No_IBD")),
+  BiomarkerC = c(2.1, NA, 3.4, 1.8, 2.9, 2.9, NA, 3.0)
+)
+  
+  
+  Check for duplicates
+
+Use duplicated() to see if any patients appear more than once.
+
+print(patients)
+
+duplicated(patients)
+!duplicated(patients)
+
+
+Show which rows are duplicated.
+
+which(duplicated(patients))
+
+which(duplicated(patients$PatientID))
+
+
+
+Row names & column names
+
+Set the PatientID column as the row names of the dataset.
+
+rownames(patients)
+
+rownames(patients) <- patients$PatientID
+
+patients$PatientID <- make.unique(as.character(patients$PatientID))
+
+rownames(patients) <- patients$PatientID
+
+patients <- data.frame(
+  PatientID = c(101, 102, 103, 104, 105, 105, 106, 107),
+  Name = c("Alice", "Bob", "Charlie", "Diana", "Ethan", "Ethan", "Fiona", "George"),
+  Age = c(72, 65, 80, 55, 70, 70, 60, 68),
+  Gender = factor(c("Female", "Male", "Male", "Female", "Male", "Male", "Female", "Male")),
+  Diagnosis = factor(c("IBD", "No_IBD", "IBD", "No_IBD", "IBD", "IBD", "No_IBD", "No_IBD")),
+  BiomarkerC = c(2.1, NA, 3.4, 1.8, 2.9, 2.9, NA, 3.0)
+)
+
+patients
+
+Use colnames() to print the names of all the columns.
+
+colnames(patients)
+
+
+Factor & table
+
+Create a frequency table of Gender.
+
+table(patients$Gender)
+
+
+
+Create a cross-tabulation (two-way table) of Gender vs Diagnosis.
+
+table(patients$Gender, patients$Diagnosis)
+
+
+Filter & select
+
+Filter the dataset to only include patients over age 65 who have "IBD".
+
+patients %>%
+filter(Age > 65)
+
+patients %>%
+filter(Age > 65, Diagnosis == "IBD")
+
+Select only the Name, Age, and Diagnosis columns.
+
+patients %>% 
+filter(Age>65, Diagnosis=="IBD") %>%
+select(Name, Age, Diagnosis)
+
+Summarise
+
+Use summarise() to calculate the mean age of patients with "IBD".
+
+patients %>%
+filter(Diagnosis=="IBD") %>%
+summarise(mean_age = mean(Age, na.rm = TRUE))
+
+patients %>%
+filter(Diagnosis=="IBD") %>%
+summarise(mean_age=mean(Age, na.rm = TRUE), mean_biomarker=mean(BiomarkerC, na.rm = TRUE))
+
+Also calculate the mean BiomarkerC value, excluding NAs.
+
+
